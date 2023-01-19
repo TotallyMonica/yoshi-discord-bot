@@ -20,10 +20,10 @@ As of right now, all fields are required. (See To-do)
 
 ## To-do
 
-- [] Audit bot allowing purging of old logs through the server its on
-- [] Commands
-  - [] Allow use of custom prefixes
-- [] URL detection
-- [] Allow bot secrets to be provided via `stdin` or as arguments
-- [] Configuration wizard
-- [] Allow bot secrets to be optional whenever possible
+- Audit bot allowing purging of old logs through the server its on
+- Commands
+  - Allow use of custom prefixes
+- URL detection
+- Allow bot secrets to be provided via `stdin` or as arguments
+- Configuration wizard
+- Allow bot secrets to be optional whenever possible
