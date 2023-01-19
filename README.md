@@ -5,12 +5,13 @@ This is, quite literally, the discord bot used in [my community discord server](
 ## Requirements
 
 [Python 3.8+](https://www.python.org/downloads/)
+
 [discord.py](https://pypi.org/project/discord.py/)
 
 ## Setup
 
 ```bash
-pip install discord.py
+pip install discord
 ./main.py
 # At this point, edit the file secrets.json that was generated with the appropriate tokens
 ./main.py
