@@ -24,7 +24,7 @@ As of right now, all fields are required. (See To-do)
 - Audit bot allowing purging of old logs through the server its on
 - Commands
   - Allow use of custom prefixes
-- URL detection
+- ~~URL detection~~ Implemented 1/18/2023
 - Allow bot secrets to be provided via `stdin` or as arguments
 - Configuration wizard
 - Allow bot secrets to be optional whenever possible
