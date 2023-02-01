@@ -91,15 +91,24 @@ class Chat(discord.Client):
         print(f"Chatbot logged on as {self.user}!")
 
     async def on_message(self, message):
+        print(message.content)
         # Check if the sender is itself
         if message.author == self.user:
             return
 
         # Check if the message is a command
-        elif message.content[1] == "!":
-            with open("command.json") as filp:
-                message.content.split(" ")
+        elif message.content[0] == "!":
+            split_message = message.content[1:].split(" ")
+
+            with open("commands.json") as filp:
                 commands = json.load(filp)
+
+            for command in commands:
+                if command == split_message[0]:
+                    await message.channel.send(f"{commands[command]['response']}")
+                    break
+
+            print("Command detected!")
 
         # Check if the message contains a URL
         # If it does, delete it and ping the user
