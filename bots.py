@@ -3,7 +3,6 @@
 import discord
 import json
 import os
-import sys
 from datetime import datetime
 
 class Audit(discord.Client):
@@ -38,8 +37,7 @@ class Audit(discord.Client):
 
     # Log when a message was edited.
     async def on_message_edit(self, before, after):
-        print(f"Message from {before.author}@{before.channel} (ID {before.id})" +\
-                    f" now says {after.content}")
+        print(f"Message from {before.author}@{before.channel} (ID {before.id}) now says {after.content}")
 
         filename = f"{before.guild}.json"
         write_out = {}
@@ -89,6 +87,9 @@ class Audit(discord.Client):
 class Chat(discord.Client):
     async def on_ready(self):
         print(f"Chatbot logged on as {self.user}!")
+    
+    # async def on_reaction_add(self, reaction, user):
+    #     print(user.name + " reated with", reaction.emoji.id)
 
     async def on_message(self, message):
         print(message.content)
@@ -100,12 +101,58 @@ class Chat(discord.Client):
         elif message.content[0] == "!":
             split_message = message.content[1:].split(" ")
 
+            # Get the roles of the sender
+
             with open("commands.json") as filp:
                 commands = json.load(filp)
 
             for command in commands:
                 if command == split_message[0]:
-                    await message.channel.send(f"{commands[command]['response']}")
+                    reply = commands[command]['response']
+
+                    # TODO: Check for if the specified command has a section that needs to be replaced
+                    #       e.g. <time> should be the time for Yoshi
+                    
+                    if '<' in reply and '>' in reply:
+                        # TODO: Allow user to modify between 12h and 24h
+                        if '<time>' in reply:
+                            reply = reply.replace('<time>', datetime.now().strftime("%I:%M %p"))
+
+                        # TODO: Allow user to modify date format, right now it's YYYY MON DD
+                        if '<date>' in reply:
+                            reply = reply.replace('<date>', datetime.now().strftime("%Y %h %d"))
+                        
+                        if '<args>' in reply:
+                            reply = reply.replace("<args>", " ".join(split_message[1:]))
+                        
+                        if '<userlog>' in reply:
+                            filename = f"{message.guild}.json"
+                            with open(filename) as filp:
+                                log = json.load(filp)
+                            
+                            for entry in log:
+                                if log[entry]["sender"] == " ".join(split_message[1:]):
+                                    reply += f"time: {log[entry]['time']}\nChannel: {log[entry]['channel']}\nmessage: {log[entry]['contents']}\n\n"
+
+                    # Attept to check to see if the command requires a certain role.
+                    try:
+                        if commands[command]['allowed_roles']:
+                            allowed = False
+                            roles = [role.name.lower() for role in message.author.roles]
+
+                            for role in roles:
+                                if role in commands[command]['allowed_roles']:
+                                    allowed = True
+                                    break
+                            
+                            if not allowed:
+                                reply = "Error: You cannot run this command"
+                    
+                    # It doesn't so escape out of it
+                    except KeyError:
+                        pass
+                    
+                    await message.channel.send(reply)
                     break
 
             print("Command detected!")

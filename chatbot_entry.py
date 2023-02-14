@@ -25,7 +25,7 @@ def load_secrets(path):
 
 def main():
     permissions = 2147494976
-    secrets = load_secrets("secrets.json")
+    secrets = load_secrets("/home/mhanson/secrets/yoshi-discord-bot/secrets.json")
 
     if secrets == None:
         print("Please input your secrets in secrets.json")
